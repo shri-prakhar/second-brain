@@ -6,6 +6,7 @@ import mongoose, { Document, Schema } from "mongoose";
 // Schema is used to define the structure of the documents (like defining the columns of a table in SQL).
 
 export interface User extends Document{
+    _id:mongoose.Schema.Types.ObjectId
     name: string
     email: string
     password?: string // becasue all methods of authentication doesnt require password 
@@ -21,7 +22,7 @@ export interface User extends Document{
 }
 
 const userSchema = new Schema<User>({
-    name: {type:String, required: true },
+    name: { type:String, required: true },
     email: {type: String, required: true , unique:true},
     password: {type: String }, //NOT required for auth users , this field can be optional but not null
     phone: {type: String ,unique:true, sparse: true  }, //sparse allows the feild to be null 
@@ -36,6 +37,7 @@ const userSchema = new Schema<User>({
 })
 
 export interface savedItems extends Document{
+    _id:mongoose.Schema.Types.ObjectId
     user:mongoose.Types.ObjectId // Reference to User
     title: string
     url: string
@@ -62,6 +64,7 @@ const savedSchema = new Schema<savedItems>({
 }); 
 
 export interface AIinteraactions extends Document{
+    _id:mongoose.Schema.Types.ObjectId
     User: mongoose.Types.ObjectId
     savedItems: mongoose.Types.ObjectId
     question: string
@@ -81,6 +84,7 @@ const AIinteraactionsSchema = new Schema<AIinteraactions>({
 });
 
 export interface Tag extends Document{
+    _id:mongoose.Schema.Types.ObjectId
     name: string
     User: mongoose.Types.ObjectId
     createAt: Date
@@ -94,6 +98,7 @@ const TagSchema = new Schema<Tag>({
 });
 
 export interface profile extends Document{
+    _id:mongoose.Schema.Types.ObjectId
     User: mongoose.Types.ObjectId
     interests: string[];
     learningProgress: {[key: string]:number} //tracks how much user has read/watched
@@ -113,6 +118,7 @@ const profileSchema = new Schema<profile>({
 })
 
 export interface sharedItems extends Document {
+    _id:mongoose.Schema.Types.ObjectId
     User: mongoose.Types.ObjectId
     savedItems: mongoose.Types.ObjectId[]
     shareId: string
@@ -131,9 +137,9 @@ const sharedItemsSchema = new Schema<sharedItems>({
     timestamps:true
 })
 
-export const User = mongoose.model<User>("User", userSchema);
-export const savedItems = mongoose.model<savedItems>("savedItems", savedSchema);
-export const AIinteraactions = mongoose.model<AIinteraactions>("AIinteraactions", AIinteraactionsSchema);
-export const Tag = mongoose.model<Tag>("Tags",TagSchema);
-export const profile = mongoose.model<profile>("profile", profileSchema);
-export const sharedItems = mongoose.model<sharedItems>("sharedItems" , sharedItemsSchema)
+export const UserModel = mongoose.model<User>("User", userSchema);
+export const savedItemsModel = mongoose.model<savedItems>("savedItems", savedSchema);
+export const AIinteraactionsModel = mongoose.model<AIinteraactions>("AIinteraactions", AIinteraactionsSchema);
+export const TagModel = mongoose.model<Tag>("Tags",TagSchema);
+export const profileModel = mongoose.model<profile>("profile", profileSchema);
+export const sharedItemsModel = mongoose.model<sharedItems>("sharedItems" , sharedItemsSchema)
