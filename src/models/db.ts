@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import { Types, model , Document, Schema } from "mongoose";
 // mongoose is the ODM (Object Document Mapper) for MongoDB, allowing us to interact with MongoDB using JavaScript/TypeScript objects.
 
 // Document is a TypeScript interface that represents a MongoDB document (i.e., a record in a collection).
@@ -6,7 +6,7 @@ import mongoose, { Document, Schema } from "mongoose";
 // Schema is used to define the structure of the documents (like defining the columns of a table in SQL).
 
 export interface User extends Document{
-    _id:mongoose.Schema.Types.ObjectId
+    _id:Types.ObjectId
     name: string
     email: string
     password?: string // becasue all methods of authentication doesnt require password 
@@ -14,14 +14,14 @@ export interface User extends Document{
     phone?: string 
     profilePicture: string
     bio?: string
-    savedItems: mongoose.Types.ObjectId[];
+    savedItems: Types.ObjectId[];
     createdAt: Date
     updatedAt: Date
     otp?: string
     otpExpiry?: Date 
 }
 
-const userSchema = new Schema<User>({
+const UserSchema = new Schema<User>({
     name: { type:String, required: true },
     email: {type: String, required: true , unique:true},
     password: {type: String }, //NOT required for auth users , this field can be optional but not null
@@ -29,16 +29,16 @@ const userSchema = new Schema<User>({
     authprovider: {type: String, unique: true , sparse: true},
     profilePicture: {type: String, sparse:true},
     bio: {type: String, sparse:true},
-    savedItems:[{type: mongoose.Schema.Types.ObjectId, ref:"savedItems"}],
+    savedItems:[{type: Schema.Types.ObjectId, ref:"SavedItems"}],
     otp: {type: String},
     otpExpiry: {type: Date}
 },{
   timestamps: true // Automatically adds two fields to every document: createdAt → When the user was created. updatedAt → Last time the user data was modified. Why Important? For tracking user activities, debugging, or auditing purposes.
 })
 
-export interface savedItems extends Document{
-    _id:mongoose.Schema.Types.ObjectId
-    user:mongoose.Types.ObjectId // Reference to User
+export interface SavedItems extends Document{
+    _id:Types.ObjectId
+    user:Types.ObjectId // Reference to User
     title: string
     url: string
     description:string
@@ -50,8 +50,8 @@ export interface savedItems extends Document{
     updateAt: Date 
 }
 
-const savedSchema = new Schema<savedItems>({
-    user: {type: mongoose.Schema.Types.ObjectId, ref: "User", required:true},
+const SavedItemsSchema = new Schema<SavedItems>({
+    user: {type: Schema.Types.ObjectId, ref: "User", required:true},
     title: {type: String, required: true },
     url: {type: String, required: true },
     description:{type: String},
@@ -64,17 +64,17 @@ const savedSchema = new Schema<savedItems>({
 }); 
 
 export interface AIinteraactions extends Document{
-    _id:mongoose.Schema.Types.ObjectId
-    User: mongoose.Types.ObjectId
-    savedItems: mongoose.Types.ObjectId
+    _id:Types.ObjectId
+    user: Types.ObjectId
+    savedItems: Types.ObjectId
     question: string
     answer: string 
     createdAt: Date
 }
 
 const AIinteraactionsSchema = new Schema<AIinteraactions>({
-    User: {type: mongoose.Schema.Types.ObjectId, ref:"User", required:true },
-    savedItems: {type: mongoose.Schema.Types.ObjectId, ref:"savedItems", required:true},
+    user: {type: Schema.Types.ObjectId, ref:"User", required:true },
+    savedItems: {type: Schema.Types.ObjectId, ref:"SavedItems", required:true},
     question: {type: String, required:true},
     answer: {type: String, required:true},
 },
@@ -84,52 +84,52 @@ const AIinteraactionsSchema = new Schema<AIinteraactions>({
 });
 
 export interface Tag extends Document{
-    _id:mongoose.Schema.Types.ObjectId
+    _id:Types.ObjectId
     name: string
-    User: mongoose.Types.ObjectId
+    User: Types.ObjectId
     createAt: Date
 }
 
 const TagSchema = new Schema<Tag>({
     name: {type: String, required:true},
-    User: {type: mongoose.Schema.Types.ObjectId , ref:"User", required: true}
+    User: {type: Schema.Types.ObjectId , ref:"User", required: true}
 },{
     timestamps:true 
 });
 
-export interface profile extends Document{
-    _id:mongoose.Schema.Types.ObjectId
-    User: mongoose.Types.ObjectId
+export interface Profile extends Document{
+    _id:Types.ObjectId
+    User: Types.ObjectId
     interests: string[];
     learningProgress: {[key: string]:number} //tracks how much user has read/watched
-    recommendations: mongoose.Types.ObjectId[]; // for AI powered suggestions
+    recommendations: Types.ObjectId[]; // for AI powered suggestions
     createAt: Date
 }
 
-const profileSchema = new Schema<profile>({
-    User: {type: mongoose.Schema.Types.ObjectId, ref:"User" , required:true},
+const ProfileSchema = new Schema<Profile>({
+    User: {type: Schema.Types.ObjectId, ref:"User" , required:true},
     interests: [{type: String}],
     learningProgress:{type: Map, of: Number},// it maps a key to a value 
-    recommendations: [{type: mongoose.Schema.Types.ObjectId, ref: "savedItems"}]
+    recommendations: [{type: Schema.Types.ObjectId, ref: "SavedItems"}]
 
 },{
     timestamps:true
 
 })
 
-export interface sharedItems extends Document {
-    _id:mongoose.Schema.Types.ObjectId
-    User: mongoose.Types.ObjectId
-    savedItems: mongoose.Types.ObjectId[]
+export interface SharedItems extends Document {
+    _id:Types.ObjectId
+    User: Types.ObjectId
+    savedItems: Types.ObjectId[]
     shareId: string
     message?:string
     createdAt:Date
     expiresAt?: Date
 }
 
-const sharedItemsSchema = new Schema<sharedItems>({
-    User: {types: mongoose.Schema.Types.ObjectId , ref: "User" , required:true}, 
-    savedItems: [{type:mongoose.Schema.Types.ObjectId, ref: "savedItems" , required:true}],
+const SharedItemsSchema = new Schema<SharedItems>({
+    User: {type: Schema.Types.ObjectId , ref: "User" , required:true}, 
+    savedItems: [{type:Schema.Types.ObjectId, ref: "SavedItems" , required:true}],
     shareId: {type:String, required:true , unique:true},
     message: {type:String , sparse:true},
     expiresAt:{type:Date}
@@ -137,9 +137,9 @@ const sharedItemsSchema = new Schema<sharedItems>({
     timestamps:true
 })
 
-export const UserModel = mongoose.model<User>("User", userSchema);
-export const savedItemsModel = mongoose.model<savedItems>("savedItems", savedSchema);
-export const AIinteraactionsModel = mongoose.model<AIinteraactions>("AIinteraactions", AIinteraactionsSchema);
-export const TagModel = mongoose.model<Tag>("Tags",TagSchema);
-export const profileModel = mongoose.model<profile>("profile", profileSchema);
-export const sharedItemsModel = mongoose.model<sharedItems>("sharedItems" , sharedItemsSchema)
+export const UserModel = model<User>("User", UserSchema);
+export const savedItemsModel = model<SavedItems>("SavedItems", SavedItemsSchema);
+export const AIinteraactionsModel = model<AIinteraactions>("AIinteraactions", AIinteraactionsSchema);
+export const TagModel = model<Tag>("Tags",TagSchema);
+export const profileModel = model<Profile>("profile", ProfileSchema);
+export const sharedItemsModel = model<SharedItems>("sharedItems" , SharedItemsSchema)

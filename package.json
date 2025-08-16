@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/server.js",
+    "build": "tsc -b",
+    "start": "npm run build && nodemon dist/server.js",
     "dev": "ts-node src/server.ts",
     "dev:watch": "nodemon --exec ts-node src/server.ts",
     "lint": "eslint . --ext .ts",
@@ -23,10 +23,10 @@
     "eslint": "^9.23.0",
     "eslint-plugin-react": "^7.37.4",
     "globals": "^16.0.0",
+    "nodemon": "^3.1.10",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.28.0",
-    "nodemon": "^3.0.2"
+    "typescript-eslint": "^8.28.0"
   },
   "dependencies": {
     "@types/cookie-parser": "^1.4.8",
