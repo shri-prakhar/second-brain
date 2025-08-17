@@ -32,3 +32,11 @@ export const verifyLogin = async (req : Request  , res : Response , next : NextF
     }
 
 } 
+
+export const ensureAuth= async(req : Request, res: Response, next: NextFunction)=>{
+    if (req.isAuthenticated()){
+        next();
+        return
+    }
+    res.status(401).json({Message:"unauthorised"});
+}

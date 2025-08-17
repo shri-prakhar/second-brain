@@ -2,6 +2,7 @@ import { Request ,  Response } from "express";
 import { RegisterUser, Login } from "../services/auth.service";
 import { signupSchema , signinSchema } from "../validations/auth.validation";
 
+ 
 export const signup = async (req:Request , res:Response):Promise<void> => {
     try {
         const { name, email, password }  =  signupSchema.parse(req.body);
@@ -48,5 +49,29 @@ export const signin = async (req : Request , res : Response ): Promise<void> => 
         res.clearCookie("token").status(200).json({Message : "Logged Out Successfully."});
     }
 
+    export const googlecallbackController = async (_req:Request , res: Response) => {
+
+            res.redirect(process.env.CLIENT_URL || "http://localhost:3000/")
+        
+    }
+
+    export const protectedController = async (req:Request , res:Response):Promise<void> => {
+        if (!req.isAuthenticated() || !req.user){
+             res.status(401).json({
+                Message: "Unauthorised"
+            })
+            return
+        }
+        res.status(200).json({user: req.user})
+    }
+    export const logoutController =async (req:Request,res:Response) => {
+        req.logout(err => {
+            if (err){
+                return res.status(400).json({Message : err.Message})
+            }
+            res.clearCookie("connect.sid");
+            res.status(200).json({Message: "Logout Successfully."})
+        })
+    }
 
 

@@ -1,4 +1,5 @@
 import { User } from "../../models/User"; // adjust import
+//import { Types } from "mongoose"
 
 declare global {
   namespace Express {
@@ -7,4 +8,13 @@ declare global {
     }
   }
 }
+declare global {
+    namespace Express {
+        interface User {
+            id?: string | undefined;
+        }
+    }
+}
+
+
 
