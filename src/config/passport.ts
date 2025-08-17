@@ -30,7 +30,7 @@ passport.use(new Googlestrategy({
                     profilePicture:profile.photos?.[0]?.value || "",
                     savedItems:[]
                  });
-        }
+                }
         done(null, user) // null for that no error has been found 
     }catch(error){
         done(error , undefined);
@@ -38,11 +38,12 @@ passport.use(new Googlestrategy({
     }
 ))
 
-passport.serializeUser<string>((User: Express.User , done:(err:unknown , id?: string ) => void) =>{ done( null , User.id?.toString())});
+passport.serializeUser<string>((User: Express.User , done:(err:unknown , id?: string ) => void) =>{ 
+    console.log(User)
+    done( null , User.id?.toString())});
 passport.deserializeUser(async (id:string, done:(err:unknown , user?: Express.User | null)=> void) => {
     try {
         const user = await UserModel.findById(id);
-    
         done(null , user)
     }catch(err:unknown){
         if (err instanceof Error){

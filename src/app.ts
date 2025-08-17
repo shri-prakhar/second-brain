@@ -3,7 +3,7 @@ import cors from "cors"
 import cookieparser from "cookie-parser"
 import authRoutes from "./routes/auth.routes"
 import dotenv from "dotenv"
-import expresssession from "express-session"
+import session from "express-session"
 import passport from "passport"
 import "./config/passport";
 
@@ -13,18 +13,6 @@ dotenv.config();
 
 
 const app  = express();
-
-app.use(expresssession({
-    secret: process.env.JWT_SECRET!,
-    resave: false ,
-    saveUninitialized:false ,
-    cookie:{
-        httpOnly: true,
-        secure:process.env.NODE_ENV === "production",
-        maxAge: 7*24*60*60*1000 
-    }}))
-app.use(passport.initialize());
-app.use(passport.session());
 
 
 app.use(express.json()); //parses the json data 
@@ -38,6 +26,18 @@ app.use(cors({
 
 
 app.use(express.urlencoded({extended:true})); //parses the url encoded data 
+
+app.use(session({
+    secret: process.env.JWT_SECRET!,
+    resave: true ,
+    saveUninitialized:true ,
+    cookie:{
+        httpOnly: true,
+        secure:false,
+        maxAge: 7*24*60*60*1000 
+    }}))
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/api/auth", authRoutes); //authRoutes is the router that contains the routes for the auth endpoints
 
