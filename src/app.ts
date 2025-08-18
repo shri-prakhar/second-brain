@@ -6,6 +6,7 @@ import dotenv from "dotenv"
 import session from "express-session"
 import passport from "passport"
 import "./config/passport";
+import ItemsRoutes from "./routes/savedItems.routes"
 
 
 
@@ -40,6 +41,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/api/auth", authRoutes); //authRoutes is the router that contains the routes for the auth endpoints
+app.use("/items" , ItemsRoutes);
+
+
 
 app.get("/", (_: Request , res: Response ) => { //{"_" used because req is not used to avoid ts or eslint error  _ is used }
     res.send("second brain api is running")

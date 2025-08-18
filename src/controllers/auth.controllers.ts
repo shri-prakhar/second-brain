@@ -11,7 +11,7 @@ export const signup = async (req:Request , res:Response):Promise<void> => {
 
         res.cookie("token" , token , {
             httpOnly: true ,
-            secure: process.env.NODE_ENV === "production",
+            secure: false,
             maxAge: 7*24*60*60*1000
         }).status(201).json({ user });
     }catch(err:unknown) {
@@ -30,7 +30,7 @@ export const signin = async (req : Request , res : Response ): Promise<void> => 
 
             res.cookie("token" , token , {
                 httpOnly: true ,
-                secure : process.env.NODE_ENV === "production",
+                secure : false,
                 maxAge: 7*24*60*60*1000
                 //samesite = "lax" for cross origin request 
             }).status(200).json({user});

@@ -10,28 +10,28 @@ export interface User extends Document{
     name: string
     email: string
     password?: string // becasue all methods of authentication doesnt require password 
-    authprovider: "email" | "phone" | "googleId" | "facebookID" | "twitterId"
-    phone?: string 
+    authprovider: "email" | "googleId" 
+    //phone?: string 
     profilePicture: string
     bio?: string
     savedItems: Types.ObjectId[];
     createdAt: Date
     updatedAt: Date
-    otp?: string
-    otpExpiry?: Date 
+    //otp?: string
+    //otpExpiry?: Date 
 }
 
 const UserSchema = new Schema<User>({
     name: { type:String, required: true },
     email: {type: String, required: true , unique:true},
     password: {type: String }, //NOT required for auth users , this field can be optional but not null
-    phone: {type: String ,unique:true, sparse: true  }, //sparse allows the feild to be null 
-    authprovider: {type: String, unique: true , sparse: true},
+    //phone: {type: String ,unique:true, sparse: true  }, //sparse allows the feild to be null 
+    authprovider: {type: String , sparse: true},
     profilePicture: {type: String, sparse:true},
     bio: {type: String, sparse:true},
     savedItems:[{type: Schema.Types.ObjectId, ref:"SavedItems"}],
-    otp: {type: String},
-    otpExpiry: {type: Date}
+    // otp: {type: String},
+    // otpExpiry: {type: Date}
 },{
   timestamps: true // Automatically adds two fields to every document: createdAt → When the user was created. updatedAt → Last time the user data was modified. Why Important? For tracking user activities, debugging, or auditing purposes.
 })

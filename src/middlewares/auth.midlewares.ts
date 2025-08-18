@@ -5,38 +5,49 @@ import { UserModel } from "../models/db";
 
 
 export const verifyLogin = async (req : Request  , res : Response , next : NextFunction):Promise<void> => {
+    
     try{
-        const token = req.cookies.token;
+        if (req.cookies.token){
+            const token = req.cookies.token;
 
-        if (!token){
-            res.status(401).json({Message : " unauthorised user "});
-            return;
+            if (!token){
+                res.status(401).json({Message : " unauthorised user "});
+                return;
+            }
+            const decoded = verifyToken(token);
+
+
+            const user = await UserModel.findById(decoded.id)
+
+            if (!user){
+                res.status(401).json({Message : "authorisation failed "});
+                    return;
+                }
+                req.user=user;
+                next();
         }
-        const decoded = verifyToken(token);
-
-
-        const user = await UserModel.findById(decoded.id)
-
-        if (!user){
-            res.status(401).json({Message : "authorisation failed "});
-            return;
-        }
-        req.user=user;
-        next();
+        else{
+            if (req.isAuthenticated()){
+                next();
+            }else{res.status(401).json({Message:"unauthorised"});}
+                    
+            }
     }catch(err:unknown){
-        if (err instanceof Error){
-            res.status(401).json({Message : err.message});
-        }else {
-            console.log("something went wrong");
+            if (err instanceof Error){
+                res.status(401).json({Message : err.message});
+            }else {
+                console.log("something went wrong");
+            }
         }
     }
 
-} 
 
-export const ensureAuth= async(req : Request, res: Response, next: NextFunction)=>{
-    if (req.isAuthenticated()){
-        next();
-        return
-    }
-    res.status(401).json({Message:"unauthorised"});
-}
+
+
+// export const ensureAuth= async(req : Request, res: Response, next: NextFunction)=>{
+//     if (req.isAuthenticated()){
+//         next();
+//         return
+//     }
+//     res.status(401).json({Message:"unauthorised"});
+// }
