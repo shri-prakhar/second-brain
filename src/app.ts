@@ -7,7 +7,8 @@ import session from "express-session"
 import passport from "passport"
 import "./config/passport";
 import ItemsRoutes from "./routes/savedItems.routes"
-
+import TagsRoutes from "./routes/tag.routes"
+import AiRoutes from "./routes/ai.routes"
 
 
 dotenv.config();
@@ -42,6 +43,8 @@ app.use(passport.session());
 
 app.use("/api/auth", authRoutes); //authRoutes is the router that contains the routes for the auth endpoints
 app.use("/items" , ItemsRoutes);
+app.use("/tags" , TagsRoutes);
+app.use("/ai" , AiRoutes)
 
 
 
