@@ -36,7 +36,7 @@ export const signin = async (req : Request , res : Response ): Promise<void> => 
             }).status(200).json({user});
 
         }catch(err:unknown){
-            if (err instanceof Error ){
+   if (err instanceof Error ){
                 res.status(401).json({message: err.message});
             }else {
                 console.log("unknown error");
